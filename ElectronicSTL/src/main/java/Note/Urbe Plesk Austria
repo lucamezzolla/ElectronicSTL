@@ -1,0 +1,19 @@
+Plesk Admin Panel
+
+https://62.218.54.69:8443
+Username: webadmin
+Password: drH0v5%5
+
+//DB CONNECTION
+jdb db = new jdb("127.0.0.1", "stldb_prod", "webadmin", "fgE36y%qkB*@_WYx$mbM");
+jdb db = new jdb("127.0.0.1", "stldb_test", "webadmin", "fgE36y%qkB*@_WYx$mbM");
+ 
+Internal IP 192.168.33.2 urbe01web (DMZ)
+
+Can I update the VPN(LIRU-AlpenCloud) or would you try it before?
+
+ 
+
+BR,
+
+Markus

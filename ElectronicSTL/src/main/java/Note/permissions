@@ -1,0 +1,34 @@
+Permessi
+
+USER
+- Logbook (vedere tutto)
+- Technical Area (vedere solamente i difetti)
+- Users (vedere tutto)
+- Statistics (vedere tutto)
+- Setting (vedere tutto)
+- Super Admin (accesso negato)
+
+DEVICE USERS
+- Logbook (vedere tutto, aggiungere)
+- Technical Area (vedere tutto, aggiungere solamente deferred e mitigation items)
+- Users (vedere tutto)
+- Statistics (vedere tutto)
+- Setting (vedere tutto)
+- Super Admin (accesso negato)
+
+TECHNICAL
+- Logbook (vedere tutto, aggiungere)
+- Technical Area (vedere tutto tranne deferred e mitigation item, aggiungere solamente riparazioni)
+- Users (vedere tutto)
+- Statistics (vedere tutto)
+- Setting (vedere tutto)
+- Super Admin (accesso negato)
+
+
+ADMIN:
+- può fare tutto
+- Super Admin (accesso negato)
+
+SUPERADMIN
+- può fare tutto
+

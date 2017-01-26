@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                margin: 10%;
+            }
+            p {
+                font-family: verdana,arial,sans-serif;
+                font-size:11px;
+                color:#333333;
+            }
+            div.text {
+                font-family: verdana,arial,sans-serif;
+                font-size:11px;
+                color:#333333;
+            }
+            table.gridtable {
+                font-family: verdana,arial,sans-serif;
+                font-size:11px;
+                color:#333333;
+                border-width: 1px;
+                border-color: #666666;
+                border-collapse: collapse;
+                width: 100%;
+            }
+            table.gridtable th {
+                border-width: 1px;
+                padding: 8px;
+                border-style: solid;
+                border-color: #666666;
+                background-color: #dedede;
+            }
+            table.gridtable td {
+                border-width: 1px;
+                padding: 8px;
+                border-style: solid;
+                border-color: #666666;
+                background-color: #ffffff;
+            }
+        </style>
+        <script>
+            function getUrlVars() {
+                var vars = {};
+                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                    vars[key] = value;
+                });
+                return vars;
+            }
+            function printPage() {
+                document.getElementById("printInput").style.visibility = "hidden";
+                print();
+                document.getElementById("printInput").style.visibility = "visible";
+            }
+        </script>
+    </head>
+    <body>
+        
+        <!--LOGO-->
+        <table style="width: 100%; border: none">
+            <tr>
+                <td style="text-align: left"><img src="pics/logoda.jpg" /></td>
+                <td style="text-align: right">
+                    <div class="text" style="margin-bottom: 5px" id="page_id"></div>
+                    <div class="text" style="margin-bottom: 5px" id="date_page"></div>
+                    <div class="text" id="simulator"></div>
+                </td>
+            </tr>
+        </table>
+        
+        <!--TIMES-->
+        <table class="gridtable">
+            <tr>
+                <th style="text-align: center"></th>
+                <th style="text-align: center">Scheduled Time</th>
+                <th style="text-align: center">Actual Time</th>
+                <th style="text-align: center">TTL</th>
+            </tr>
+            <tr>
+                <td style="text-align: right">Start</td>
+                <td style="text-align: center" id="sched_datetime_start">NIL</td>
+                <td style="text-align: center" id="actual_datetime_start"></td>
+                <td style="text-align: center" id="ttl_start"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right">End</td>
+                <td style="text-align: center" id="sched_datetime_end">NIL</td>
+                <td style="text-align: center" id="actual_datetime_end">NIL</td>
+                <td style="text-align: center" id="ttl_end"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right">Total</td>
+                <td style="text-align: center" id="sched_datetime_total">NIL</td>
+                <td style="text-align: center" id="actual_datetime_total">NIL</td>
+                <td style="text-align: center" id="ttl_total"></td>
+            </tr>
+        </table><br />
+        
+        <!--INFO-->
+        <table class="gridtable">
+            <tr>
+                <th style="text-align: center">Customer</th>
+                <th style="text-align: center">Training Type</th>
+                <th style="text-align: center">Session Content</th>
+                <th style="text-align: center">Maintenance Type</th>
+            </tr>
+            <tr>
+                <td style="text-align: center" id="customer">NIL</td>
+                <td style="text-align: center" id="training_type">NIL</td>
+                <td style="text-align: center" id="session_content">NIL</td>
+                <td style="text-align: center" id="maintenance_type">NIL</td>
+            </tr>
+        </table><br />    
+        <table class="gridtable">
+            <tr>
+                <th style="text-align: center">Device Users</th>
+                <th style="text-align: center">Students</th>
+                <th style="text-align: center">Observers</th>
+            </tr>
+            <tr>
+                <td style="text-align: center" id="device_users">NIL</td>
+                <td style="text-align: center" id="students">NIL</td>
+                <td style="text-align: center" id="observers">NIL</td>
+            </tr>
+        </table><br />
+        <table class="gridtable">
+            <tr>
+                <th style="text-align: center">Maintenance Called</th>
+                <th style="text-align: center">Training Completed</th>
+                <th style="text-align: center">Interruptions</th>
+                <th style="text-align: center">Lost Time (min)</th>
+                <th style="text-align: center">Device Performance</th>
+            </tr>
+            <tr>
+                <td style="text-align: center" id="maintenance_called">NIL</td>
+                <td style="text-align: center" id="training_completed">NIL</td>
+                <td style="text-align: center" id="interruptions">NIL</td>
+                <td style="text-align: center" id="lost_training_time">NIL</td>
+                <td style="text-align: center" id="device_performance">NIL</td>
+            </tr>
+        </table><br />
+        <!--PERIODICAL TESTS-->
+        <table class="gridtable">
+            <tr>
+                <th style="text-align: center">Periodical Tests</th>
+            </tr>
+            <tr>
+                <td style="text-align: center" id="periodicalTests"></td>
+            </tr>
+        </table><br />
+        <!--DEFECTS-->
+        <table class="gridtable">
+            <tr>
+                <th style="text-align: center">Defects</th>                
+            </tr>
+            <tr>
+                <td style="text-align: center" id="defects"></td>
+            </tr>
+        </table><br />
+        <!--REMARKS-->
+        <table class="gridtable">
+            <tr>
+                <th style="text-align: center">Remarks</th>
+            </tr>
+            <tr>
+                <td style="text-align: center" id="remarks">NIL</td>
+            </tr>
+        </table><br />
+        <!--SIGN-->
+        <p style="text-align: right"><b>SIGNATURE</b></p>
+        <p style="text-align: right" id="author"></p><br />
+        
+        <input type="button" value="Print..." id="printInput" onclick="printPage()" />
+        
+        <script>
+            document.getElementById("page_id").innerHTML = "Page ID: "+getUrlVars()["page_id"].replace(/%20/g, " ");
+            document.getElementById("date_page").innerHTML = getUrlVars()["date_page"].replace(/%20/g, " ");
+            document.getElementById("simulator").innerHTML = "SIMULATOR: "+getUrlVars()["simulator"].replace(/%20/g, " ");
+            document.getElementById("sched_datetime_start").innerHTML = getUrlVars()["sched_datetime_start"].replace(/%20/g, " ");
+            document.getElementById("sched_datetime_end").innerHTML = getUrlVars()["sched_datetime_end"].replace(/%20/g, " ");
+            document.getElementById("sched_datetime_total").innerHTML = getUrlVars()["sched_datetime_total"].replace(/%20/g, " ");
+            document.getElementById("actual_datetime_start").innerHTML = getUrlVars()["actual_datetime_start"].replace(/%20/g, " ");
+            document.getElementById("actual_datetime_end").innerHTML = getUrlVars()["actual_datetime_end"].replace(/%20/g, " ");
+            document.getElementById("actual_datetime_total").innerHTML = getUrlVars()["actual_datetime_total"].replace(/%20/g, " ");
+            document.getElementById("ttl_start").innerHTML = getUrlVars()["ttl_start"].replace(/%20/g, " ");
+            document.getElementById("ttl_end").innerHTML = getUrlVars()["ttl_end"].replace(/%20/g, " ");
+            document.getElementById("ttl_total").innerHTML = getUrlVars()["ttl_total"].replace(/%20/g, " ");
+            document.getElementById("customer").innerHTML = getUrlVars()["customer"].replace(/%20/g, " ");
+            document.getElementById("training_type").innerHTML = getUrlVars()["training_type"].replace(/%20/g, " ");
+            document.getElementById("session_content").innerHTML = getUrlVars()["session_content"].replace(/%20/g, " ");
+            document.getElementById("maintenance_type").innerHTML = getUrlVars()["maintenance_type"].replace(/%20/g, " ");
+            document.getElementById("device_users").innerHTML = getUrlVars()["device_users"].replace(/%20/g, " ");
+            document.getElementById("students").innerHTML = getUrlVars()["students"].replace(/%20/g, " ");
+            document.getElementById("observers").innerHTML = getUrlVars()["observers"].replace(/%20/g, " ");
+            document.getElementById("maintenance_called").innerHTML = getUrlVars()["maintenance_called"].replace(/%20/g, " ");
+            document.getElementById("training_completed").innerHTML = getUrlVars()["training_completed"].replace(/%20/g, " ");
+            document.getElementById("interruptions").innerHTML = getUrlVars()["interruptions"].replace(/%20/g, " ");
+            document.getElementById("lost_training_time").innerHTML = getUrlVars()["lost_training_time"].replace(/%20/g, " ");
+            document.getElementById("device_performance").innerHTML = getUrlVars()["device_performance"].replace(/%20/g, " ");
+            document.getElementById("maintenance_called").innerHTML = getUrlVars()["maintenance_called"].replace(/%20/g, " ");
+            document.getElementById("periodicalTests").innerHTML = getUrlVars()["periodicalTests"].replace(/%20/g, " ");
+            document.getElementById("defects").innerHTML = getUrlVars()["defects"].replace(/%20/g, " ");
+            document.getElementById("remarks").innerHTML = getUrlVars()["remarks"].replace(/%20/g, " ");
+            document.getElementById("author").innerHTML = getUrlVars()["author"].replace(/%20/g, " ");
+            
+            document.getElementById("simulator").innerHTML = document.getElementById("simulator").innerHTML.replace(/%27/g, "'");
+            document.getElementById("customer").innerHTML = document.getElementById("customer").innerHTML.replace(/%27/g, "'");
+            document.getElementById("session_content").innerHTML = document.getElementById("session_content").innerHTML.replace(/%27/g, "'");
+            document.getElementById("device_users").innerHTML = document.getElementById("device_users").innerHTML.replace(/%27/g, "'");
+            document.getElementById("students").innerHTML = document.getElementById("students").innerHTML.replace(/%27/g, "'");
+            document.getElementById("observers").innerHTML = document.getElementById("observers").innerHTML.replace(/%27/g, "'");
+            document.getElementById("defects").innerHTML = document.getElementById("defects").innerHTML.replace(/%27/g, "'");
+            document.getElementById("remarks").innerHTML = document.getElementById("remarks").innerHTML.replace(/%27/g, "'");
+            document.getElementById("author").innerHTML = document.getElementById("author").innerHTML.replace(/%27/g, "'");
+        </script>
+        
+    </body>
+</html>

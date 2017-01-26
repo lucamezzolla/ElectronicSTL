@@ -1,0 +1,79 @@
+<html>
+    <head> 
+        <style>
+            div {
+                font-family: verdana,arial,sans-serif;
+                font-size: 14px;
+                margin-bottom: 2px;
+                padding-bottom: 2px;
+                color:#333333;
+            }
+        </style>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript">
+            function getUrlVars() {
+                var vars = {};
+                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                    vars[key] = value.replace(/%20/g, ' ');
+                });
+                return vars;
+            }
+            function printChart() {
+                document.getElementById("printInput").style.visibility = "hidden";
+                print();
+                document.getElementById("printInput").style.visibility = "visible";
+            }
+            google.charts.load("current", {packages:["corechart"]});
+            google.charts.setOnLoadCallback(drawChart);
+            function drawChart() {
+                var val1 = getUrlVars()['val1'];
+                var val2 = getUrlVars()['val2'];
+                var val3 = getUrlVars()['val3'];
+                var val4 = getUrlVars()['val4'];
+                var val5 = getUrlVars()['val5'];
+                var val6 = getUrlVars()['val6'];
+                var val7 = getUrlVars()['val7'];
+                var val8 = getUrlVars()['val8'];
+                var val9 = getUrlVars()['val9'];
+                var data = google.visualization.arrayToDataTable([
+                    ['Task', 'stat2'],
+                    ['Training', parseInt(val1)],
+                    ['Check',      parseInt(val2)],
+                    ['Engineering',  parseInt(val3)],
+                    ['Maintenance', parseInt(val4)],
+                    ['Regular Authority', parseInt(val5)],
+                    ['Other (ex. Demo)', parseInt(val6)],
+                    ['Compliance Monitoring', parseInt(val7)],
+                    ['Safety Monitoring', parseInt(val8)],
+                    ['Periodical Test', parseInt(val9)],
+                ]);
+                var options = {
+                    title: 'Type of Session',
+                    sliceVisibilityThreshold: 0,
+                    is3D: true,
+                };
+                var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+                chart.draw(data, options);
+                if(parseInt(val1) == 0 && parseInt(val2) == 0 && parseInt(val3) == 0 &&
+                    parseInt(val4) == 0 && parseInt(val5) == 0 && parseInt(val6) == 0 &&
+                    parseInt(val7) == 0 && parseInt(val8) == 0 && parseInt(val9) == 0) {
+                    var element = document.getElementById("piechart_3d");
+                    element.outerHTML = "";
+                    delete element;
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div id="piechart_3d" style="width: 900px; height: 500px;"></div>
+        <div id="simulator"></div>
+        <div id="period"></div>
+        <div id="period_count"></div><br />
+        <input type="button" value="Print..." id="printInput" onclick="printChart()" />
+        <script>
+            document.getElementById('simulator').innerHTML = "Simulator: "+getUrlVars()['sim'].replace(/%20/g, " ");
+            document.getElementById('period').innerHTML = "Period: "+getUrlVars()['start']+" - "+getUrlVars()['end'];
+            document.getElementById('period_count').innerHTML = "Number of session in this period: "+getUrlVars()['period_count'];
+        </script>
+    </body>
+</html>
