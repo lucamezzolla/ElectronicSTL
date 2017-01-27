@@ -74,7 +74,7 @@ public class UsersComponent extends AbstractTable implements Button.ClickListene
             win.setId("UserWindow");
             UI.getCurrent().addWindow(win);
         } catch (SQLException ex) {
-            MyNotification.SHOW("Error", ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+            MyNotification.SHOW("Error", Messages.ERROR_GENERIC, Notification.Type.ERROR_MESSAGE);
         }
     }
     

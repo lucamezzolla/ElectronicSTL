@@ -212,7 +212,7 @@ public class UserWindow extends Window implements Button.ClickListener {
                     listener.updateTable(null);
                 }
             } catch (Exception ex) {
-                MyNotification.SHOW("Error", ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+                MyNotification.SHOW("Error", Messages.ERROR_GENERIC, Notification.Type.ERROR_MESSAGE);
             }
         }
         if(event.getButton() == changePass) {

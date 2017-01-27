@@ -10,6 +10,7 @@ import com.vaadin.annotations.Push;
 import com.vaadin.server.Page;
 import com.vaadin.server.Page.Styles;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.communication.PushMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
@@ -29,15 +30,13 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.vaadin.teemu.VaadinIcons;
 
 /**
  *
  * @author Luca Mezzolla
  */
-@Push
+@Push(PushMode.AUTOMATIC)
 public class MainPage extends CustomComponent implements LoginInterface {
 
     private final jdb db;
@@ -50,7 +49,6 @@ public class MainPage extends CustomComponent implements LoginInterface {
     private final static int LOGBOOK_COMPONENT = 3;
     private final static int TECHNICAL_COMPONENT = 4;
     private final static int USERS_COMPONENT = 5;
-    private final static int INFO_COMPONENT = 6;
     private Label utcTimeLabel;
     private Date utcDate;
     private Timer timer;

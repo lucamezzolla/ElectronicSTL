@@ -1,5 +1,6 @@
 package aero.urbe.electronicstl;
 
+import aero.urbe.electronicstl.Constants.Messages;
 import aero.urbe.electronicstl.MyClasses.MyNotification;
 import aero.urbe.electronicstl.ui.MainPage;
 import com.vaadin.annotations.Push;
@@ -10,6 +11,7 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.shared.communication.PushMode;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 
@@ -20,14 +22,14 @@ import com.vaadin.ui.UI;
  * The UI is initialized using {@link #init(VaadinRequest)}. This method is intended to be 
  * overridden to add component to the user interface and initialize non-component functionality.
  */
-@Push
+@Push(PushMode.AUTOMATIC)
 @Theme("mytheme")
 public class MyUI extends UI {
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         try {
-            VaadinSession.getCurrent().getSession().setMaxInactiveInterval(-1); //timeout never
+            VaadinSession.getCurrent().getSession().setMaxInactiveInterval(18000); //5 hours
             UI.getCurrent().getSession().getLockInstance();
             //Set DB
             jdb db = new jdb("127.0.0.1", "stldb_test", "webadmin", "fgE36y%qkB*@_WYx$mbM");
@@ -36,7 +38,7 @@ public class MyUI extends UI {
             mp.setSizeFull();
             setContent(mp);
         } catch (Exception ex) {
-            MyNotification.SHOW("Error", ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+            MyNotification.SHOW("Error", Messages.ERROR_GENERIC, Notification.Type.ERROR_MESSAGE);
         }
     }
 
