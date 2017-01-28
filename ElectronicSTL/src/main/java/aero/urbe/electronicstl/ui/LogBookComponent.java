@@ -16,6 +16,7 @@ import aero.urbe.electronicstl.jdb;
 import com.vaadin.data.Property;
 import com.vaadin.event.ContextClickEvent;
 import com.vaadin.event.FieldEvents;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.Page;
@@ -38,10 +39,17 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Runo;
+import eu.maxschuster.vaadin.autocompletetextfield.AutocompleteSuggestionProvider;
+import eu.maxschuster.vaadin.autocompletetextfield.AutocompleteTextField;
+import eu.maxschuster.vaadin.autocompletetextfield.provider.CollectionSuggestionProvider;
+import eu.maxschuster.vaadin.autocompletetextfield.provider.MatchMode;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -316,7 +324,7 @@ interface LogBookTable {
     void updateTable();
 }
 
-class NewPage extends Window implements Property.ValueChangeListener, Button.ClickListener {
+class NewPage extends Window implements Property.ValueChangeListener, Button.ClickListener, FieldEvents.TextChangeListener {
     
     private final Integer id;
     private final String name;
@@ -348,12 +356,12 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
     private final AddDefects ad;
     private Button submit;
     private Button cancel;
-    private TextField dev1;
-    private TextField dev2;
-    private TextField stu1;
-    private TextField stu2;
-    private TextField obs1;
-    private TextField obs2;
+    private AutocompleteTextField dev1;
+    private AutocompleteTextField dev2;
+    private AutocompleteTextField stu1;
+    private AutocompleteTextField stu2;
+    private AutocompleteTextField obs1;
+    private AutocompleteTextField obs2;
     private Button addPeriodicalTests;
     private HashMap<Object, Object> stl_page;
     private Date nowDate;
@@ -383,6 +391,7 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
         UI.getCurrent().addWindow(ad);
         buildUI();
         fillCombos();
+        
     }
     
     private void closeWin() {
@@ -458,8 +467,8 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
         hl0.addComponents(vl0_1, vl0_2, vl0_3);
         //CUSTOMER - TRAINING - SESSION CONTENT - MAINTENANCE TYPE - ADD PERIODICAL TEST
         HorizontalLayout hl1 = buildHorizontLayout();
-        customer = buildCombo(Messages.CUSTOMER);
-        trainingType = buildCombo(Messages.TRAINING_TYPE);
+        customer = buildCombo(Messages.CUSTOMER, false);
+        trainingType = buildCombo(Messages.TRAINING_TYPE, false);
         trainingType.addValueChangeListener(this);
         trainingType.addContextClickListener(new ContextClickEvent.ContextClickListener() {
             @Override
@@ -468,7 +477,7 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
             }
         });
         sessionContent = buildTextField(Messages.SESSION_CONTENT);
-        maintenanceType = buildCombo(Messages.MAINT_TYPE);
+        maintenanceType = buildCombo(Messages.MAINT_TYPE, false);
         addPeriodicalTests = new Button(Messages.ADD_PERIODICAL_TESTS, this);
         addPeriodicalTests.setWidth("100%");
         addPeriodicalTests.setStyleName(Runo.BUTTON_DEFAULT);
@@ -482,11 +491,11 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
         hl1.setExpandRatio(addPeriodicalTests, 0.2f);
         //MAINTENANCE CALLED - TRAINING COMPLETED - INTERRUPTIONS - LOST TRAINING TIME - DEVICE P - ADD DEFECTS
         HorizontalLayout hl2 = buildHorizontLayout();
-        maintCalled = buildCombo(Messages.MAINT_CALLED);
-        trainingCompleted = buildCombo(Messages.TRAINING_COMPLETED);
-        interruptions = buildCombo(Messages.INTERRUPTIONS);
-        lostTrainingTime = buildCombo(Messages.LOST_TRAINING_TIME);
-        devicePerf = buildCombo(Messages.DEVICE_PERF);
+        maintCalled = buildCombo(Messages.MAINT_CALLED,false);
+        trainingCompleted = buildCombo(Messages.TRAINING_COMPLETED,false);
+        interruptions = buildCombo(Messages.INTERRUPTIONS,false);
+        lostTrainingTime = buildCombo(Messages.LOST_TRAINING_TIME,false);
+        devicePerf = buildCombo(Messages.DEVICE_PERF,false);
         addDefectsButton = new Button(Messages.ADD_DEFECTS, this);
         addDefectsButton.setWidth("100%");
         addDefectsButton.setStyleName(Runo.BUTTON_DEFAULT);
@@ -503,12 +512,14 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
         VerticalLayout vl1_1 = buildVerticalLayout(Messages.DEVICE_USERS_CAPTION);
         VerticalLayout vl1_2 = buildVerticalLayout(Messages.STUDENTS);
         VerticalLayout vl1_3 = buildVerticalLayout(Messages.OBSERVERS);
-        dev1 = buildTextField("");
-        dev2 = buildTextField("");
-        stu1 = buildTextField("");
-        stu2 = buildTextField("");
-        obs1 = buildTextField("");
-        obs2 = buildTextField("");
+        Collection<String> frequentUsers = Queries.SELECT_FREQUENT_USERS(db);
+        AutocompleteSuggestionProvider suggestionProvider = new CollectionSuggestionProvider(frequentUsers, MatchMode.CONTAINS, true, Locale.US);
+        dev1 = new AutocompleteTextField(); dev1.setWidth("100%"); dev1.setImmediate(true); dev1.setMinChars(1); dev1.setSuggestionProvider(suggestionProvider);
+        dev2 = new AutocompleteTextField(); dev2.setWidth("100%"); dev2.setImmediate(true); dev2.setMinChars(1); dev2.setSuggestionProvider(suggestionProvider);
+        stu1 = new AutocompleteTextField(); stu1.setWidth("100%"); stu1.setImmediate(true); stu1.setMinChars(1); stu1.setSuggestionProvider(suggestionProvider);
+        stu2 = new AutocompleteTextField(); stu2.setWidth("100%"); stu2.setImmediate(true); stu2.setMinChars(1); stu2.setSuggestionProvider(suggestionProvider);
+        obs1 = new AutocompleteTextField(); obs1.setWidth("100%"); obs1.setImmediate(true); obs1.setMinChars(1); obs1.setSuggestionProvider(suggestionProvider);
+        obs2 = new AutocompleteTextField(); obs2.setWidth("100%"); obs2.setImmediate(true); obs2.setMinChars(1); obs2.setSuggestionProvider(suggestionProvider);
         dev1.setInputPrompt(Messages.DEVICE_USERS+" 1 (Required)");
         dev2.setInputPrompt(Messages.DEVICE_USERS+" 2");
         stu1.setInputPrompt(Messages.STUDENTS+" 1");
@@ -543,11 +554,11 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
         super.setContent(vl);
     }
     
-    private ComboBox buildCombo(String caption) {
+    private ComboBox buildCombo(String caption, boolean allowed) {
         ComboBox combo = new ComboBox(caption);
         combo.setWidth("100%");
-        combo.setNullSelectionAllowed(false);
-        combo.setTextInputAllowed(false);
+        combo.setNullSelectionAllowed(allowed);
+        combo.setTextInputAllowed(allowed);
         return combo;
     }
     
@@ -739,6 +750,13 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
                         return;
                     }
                 }
+                //INSERT FREQUENT USERS BEFORE
+                Queries.INSERT_FREQUENT_USER(db, dev1.getValue());
+                Queries.INSERT_FREQUENT_USER(db, dev2.getValue());
+                Queries.INSERT_FREQUENT_USER(db, stu1.getValue());
+                Queries.INSERT_FREQUENT_USER(db, stu2.getValue());
+                Queries.INSERT_FREQUENT_USER(db, obs1.getValue());
+                Queries.INSERT_FREQUENT_USER(db, obs2.getValue());
                 //PREPARE VALUES
                 //stl_pages
                 Map<String, String> stlPage = new HashMap<>();
@@ -874,6 +892,11 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
                 MyNotification.SHOW(Messages.ERROR, Messages.ERROR_GENERIC, Notification.Type.ERROR_MESSAGE);
             }
         }
+    }
+
+    @Override
+    public void textChange(FieldEvents.TextChangeEvent event) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

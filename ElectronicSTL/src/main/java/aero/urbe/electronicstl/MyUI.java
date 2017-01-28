@@ -3,7 +3,6 @@ package aero.urbe.electronicstl;
 import aero.urbe.electronicstl.Constants.Messages;
 import aero.urbe.electronicstl.MyClasses.MyNotification;
 import aero.urbe.electronicstl.ui.MainPage;
-import com.vaadin.annotations.Push;
 import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.Theme;
@@ -11,7 +10,6 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
-import com.vaadin.shared.communication.PushMode;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 
@@ -22,7 +20,6 @@ import com.vaadin.ui.UI;
  * The UI is initialized using {@link #init(VaadinRequest)}. This method is intended to be 
  * overridden to add component to the user interface and initialize non-component functionality.
  */
-@Push(PushMode.AUTOMATIC)
 @Theme("mytheme")
 public class MyUI extends UI {
 

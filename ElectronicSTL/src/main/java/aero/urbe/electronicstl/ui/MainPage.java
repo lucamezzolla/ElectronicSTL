@@ -36,7 +36,6 @@ import org.vaadin.teemu.VaadinIcons;
  *
  * @author Luca Mezzolla
  */
-@Push(PushMode.AUTOMATIC)
 public class MainPage extends CustomComponent implements LoginInterface {
 
     private final jdb db;
@@ -218,10 +217,10 @@ public class MainPage extends CustomComponent implements LoginInterface {
             public void run() {
                 utcDate.setTime(utcDate.getTime()+1000);
                 utcTimeLabel.setValue("<div style='text-align: right; margin-top: 2px; margin-bottom: 2px'>"+utcDate.toGMTString()+"</div>");
-                UI.getCurrent().push();
+                //UI.getCurrent().push();
             }
         };
-        timer.schedule(timerTask, 1000, 1000);
+        timer.schedule(timerTask, 0, 1000);
         timerTask.run();
     }
     

@@ -21,11 +21,14 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -87,6 +90,15 @@ public class Queries {
             rs.close();
         }
         return id;
+    }
+    public static void INSERT_FREQUENT_USER(jdb db, String name) {
+        try {
+            String query = "INSERT INTO "+DBNAME+"stl_frequent_users (name) SELECT * FROM (SELECT '"+name+"') AS tmp WHERE NOT EXISTS "
+                    + "(SELECT name FROM "+DBNAME+"stl_frequent_users WHERE name = '"+name+"') LIMIT 1";
+            db.update(query);
+        } catch (SQLException ex) {
+            //
+        }
     }
     public static void INSERT_SIMULATOR(jdb db, String name, int ttl, String ttlStart) throws Exception {
         String nameStr = MySQLUtils.mysql_real_escape_string(db, name);
@@ -167,6 +179,25 @@ public class Queries {
             Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
         }
         return user;
+    }
+    
+    public static Collection<String> SELECT_FREQUENT_USERS(jdb db) {
+        ArrayList<String> array = new ArrayList<>();
+        Collection<String> collection = array;
+        try {
+            String query = "select name from "+DBNAME+"stl_frequent_users order by name";
+            ResultSet rs = db.query(query);
+            if(rs.next()) {
+                rs.beforeFirst();
+                while(rs.next()) {
+                    array.add(rs.getString(1));
+                }
+                rs.close();
+            }
+        } catch (SQLException ex) {
+            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+        }
+        return collection;
     }
     
     public static SimulatorStatusItem SELECT_LAST_STATUS_SIMULATOR(jdb db, int simulatorId) {
