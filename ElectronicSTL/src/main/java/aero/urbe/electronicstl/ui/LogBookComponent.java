@@ -416,7 +416,7 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
         actualTtl = array.get(3).toString();
         vl.removeAllComponents();
         //Date page
-        SimpleDateFormat formatTitle = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+        SimpleDateFormat formatTitle = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         formatDB = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         formatTitle.setTimeZone(TimeZone.getTimeZone("UTC"));
         formatDB.setTimeZone(TimeZone.getTimeZone("UTC"));
