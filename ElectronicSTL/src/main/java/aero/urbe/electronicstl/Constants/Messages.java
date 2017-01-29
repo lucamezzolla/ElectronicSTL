@@ -27,6 +27,8 @@ public class Messages {
     public final static String SIMULATOR = "Simulator";
     public final static String SIMULATOR_STATUS = "Simulators Status";
     public final static String DESCRIPTION = "Description";
+    public final static String FREQUENT_USERS = "Frequent Users";
+    public final static String ADD_FREQUENT_USER = "Add Frequent User";
     public final static String FROM = "From";
     public final static String TO = "To";
     public final static String TYPE = "Type";

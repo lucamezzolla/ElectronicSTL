@@ -16,7 +16,6 @@ import aero.urbe.electronicstl.jdb;
 import com.vaadin.data.Property;
 import com.vaadin.event.ContextClickEvent;
 import com.vaadin.event.FieldEvents;
-import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.Page;
@@ -43,11 +42,9 @@ import eu.maxschuster.vaadin.autocompletetextfield.AutocompleteSuggestionProvide
 import eu.maxschuster.vaadin.autocompletetextfield.AutocompleteTextField;
 import eu.maxschuster.vaadin.autocompletetextfield.provider.CollectionSuggestionProvider;
 import eu.maxschuster.vaadin.autocompletetextfield.provider.MatchMode;
-import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -341,6 +338,14 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
     private ComboBox interruptions;
     private ComboBox devicePerf;
     private ComboBox lostTrainingTime;
+    private ComboBox startScheduledHours;
+    private ComboBox startScheduledMin;
+    private ComboBox endScheduledHours;
+    private ComboBox endScheduledMin;
+    private ComboBox startActualHours;
+    private ComboBox startActualMin;
+    private ComboBox endActualHours;
+    private ComboBox endActualMin;
     private TextField scheduledTotal;
     private TextField actualTotal;
     private PopupDateField startScheduled;
@@ -444,7 +449,7 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
             public void valueChange(Property.ValueChangeEvent event) {
                 endActual.setValue((Date)event.getProperty().getValue());
             }
-        });     
+        });
         ttlStart = buildTextField(Messages.START);
         ttlStart.setHeight("24px");
         ttlEnd = new TextField();

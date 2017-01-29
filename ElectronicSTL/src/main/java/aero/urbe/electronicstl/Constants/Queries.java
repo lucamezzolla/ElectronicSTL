@@ -707,6 +707,14 @@ public class Queries {
             Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
         }
     }
+    public static final void UPLOAD_TABLE(jdb db, String table, Integer id, String newValue) {
+        try {
+            String query = "update "+table+" set name = '"+newValue+"' where id = '"+id+"'";
+            db.update(query);
+        } catch (SQLException ex) {
+            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+        }
+    }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //STATISTICS

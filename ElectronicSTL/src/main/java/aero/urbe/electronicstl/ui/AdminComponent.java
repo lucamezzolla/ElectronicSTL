@@ -5,7 +5,6 @@ import aero.urbe.electronicstl.Constants.Messages;
 import aero.urbe.electronicstl.Constants.Queries;
 import aero.urbe.electronicstl.MyClasses.MyItem;
 import aero.urbe.electronicstl.MyClasses.MyNotification;
-import aero.urbe.electronicstl.MyClasses.MyStepper;
 import aero.urbe.electronicstl.MyClasses.MyUtilities;
 import aero.urbe.electronicstl.MyClasses.SimulatorStatusItem;
 import aero.urbe.electronicstl.MyClasses.User;
@@ -23,6 +22,7 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
@@ -84,6 +84,7 @@ public class AdminComponent extends CustomComponent implements Button.ClickListe
         addItemButton.addClickListener(this);
         advancedCombo = MyUtilities.buildComboBox(null);
         advancedCombo.addItem(Constants.CUSTOMERS_ITEM);
+        advancedCombo.addItem(Constants.FREQUENT_USERS_ITEM);
         advancedCombo.addItem(Constants.SIMULATORS_ITEM);
         advancedCombo.addItem(Constants.SIMULATORS_STATUS_ITEM);
         advancedCombo.addValueChangeListener(this);
@@ -193,13 +194,15 @@ public class AdminComponent extends CustomComponent implements Button.ClickListe
     @Override
     public void updateTable(String tableId) {
         simsStatusTable.setVisible(false);
+        table.setCaption("");
+        table.removeAllItems();
         if(tableId.equals(Messages.CUSTOMERS)) {
+            table.setCaption(Messages.CUSTOMERS);
             ArrayList<MyItem> array = null;
             table.setId(Messages.CUSTOMERS);
             table.setColumnCollapsed(Messages.ACTUAL+" "+Messages.TTL, true);
             array = Queries.SELECT_TABLE(db, "stl_customers");
             if(array.size() > 0) {
-                table.removeAllItems();
                 for(MyItem foo : array) {
                     table.addItem(new Object[] { foo.getName(), "" }, foo.getId());
                 }
@@ -208,14 +211,28 @@ public class AdminComponent extends CustomComponent implements Button.ClickListe
                 table.setVisible(false);
             }
         }
+        if(tableId.equals(Messages.FREQUENT_USERS)) {
+            table.setCaption(Messages.FREQUENT_USERS+" (Double click to edit)");
+            table.setId(Messages.FREQUENT_USERS);
+            table.setColumnCollapsed(Messages.ACTUAL+" "+Messages.TTL, true);
+            ArrayList<MyItem> frequentUsers = Queries.SELECT_TABLE(db, "stl_frequent_users");
+            if(frequentUsers.size() > 0) {
+                table.setVisible(true);
+                for(MyItem foo : frequentUsers) {
+                    table.addItem(new Object[] { foo.getName(), "" }, foo);
+                }
+            } else {
+                table.setVisible(false);
+            }
+        }
         if(tableId.equals(Messages.SIMULATORS)) {
+            table.setCaption(Messages.SIMULATORS);
             simsStatusTable.setVisible(false);
             ArrayList<Map<String, String>> array = null;
             table.setId(Messages.SIMULATORS); 
             table.setColumnCollapsed(Messages.ACTUAL+" "+Messages.TTL, false);
             array = Queries.SELECT_SIMULATORS2(db);
             if(array.size() > 0) {
-                table.removeAllItems();
                 for(Map<String, String> foo : array) {
                     table.addItem(new Object[] { foo.get("name"), foo.get("actual_ttl") }, foo.get("id"));
                 }
@@ -226,6 +243,7 @@ public class AdminComponent extends CustomComponent implements Button.ClickListe
         }
         if(tableId.equals(Messages.SIMULATOR_STATUS)) {
             table.setVisible(false);
+            simsStatusTable.setCaption(Messages.SIMULATOR_STATUS+" (Double click to edit)");
             simsStatusTable.removeAllItems();
             ArrayList<MyItem> sims = Queries.SELECT_SIMULATORS1(db);
             if(sims.size() > 0) {
@@ -264,6 +282,13 @@ public class AdminComponent extends CustomComponent implements Button.ClickListe
             table.setId(Messages.CUSTOMERS);
             updateTable(Messages.CUSTOMERS);
         }
+        if(event.getProperty().getValue().equals(Constants.FREQUENT_USERS_ITEM)) {
+            if(MyUtilities.CHECK_LEVEL(user.getLevelId(), Constants.ADMIN)) {
+                addItemButton.setVisible(true);
+            }
+            table.setId(Messages.FREQUENT_USERS);
+            updateTable(Messages.FREQUENT_USERS);
+        }
         if(event.getProperty().getValue().equals(Constants.SIMULATORS_ITEM)) {
             if(MyUtilities.CHECK_LEVEL(user.getLevelId(), Constants.ADMIN)) {
                 addItemButton.setVisible(true);
@@ -281,7 +306,35 @@ public class AdminComponent extends CustomComponent implements Button.ClickListe
     public void itemClick(ItemClickEvent event) {
         if(event.isDoubleClick()) {
             //edit((Integer)event.getItemId());
-            MyNotification.SHOW(Messages.WARNING_NOT_EDITABLE, Notification.Type.WARNING_MESSAGE);
+            if(table.getId().equals(Messages.FREQUENT_USERS)) {
+                final MyItem foo = (MyItem) event.getItemId();
+                final Window win = new Window("Edit...");
+                win.setWidth("30%");
+                win.setResizable(false);
+                win.setModal(true);
+                VerticalLayout vl = new VerticalLayout(); vl.setMargin(true); vl.setSpacing(true); vl.setWidth("100%");
+                final TextField name = new TextField(); name.setValue(foo.getName()); name.setWidth("100%"); name.focus();
+                Button submit = new Button(Messages.SUBMIT, new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(Button.ClickEvent event) {
+                        if(name.getValue().length() > 0) {
+                            Queries.UPLOAD_TABLE(db, "stl_frequent_users", foo.getId(), name.getValue());
+                            win.close();
+                            updateTable(Messages.FREQUENT_USERS);
+                            Notification.show("Updated!");
+                        } else {
+                            Notification.show(Messages.ERROR, Messages.ERROR_EMPTY_FIELDS, Type.ERROR_MESSAGE);
+                        }
+                    }
+                });
+                submit.setClickShortcut(KeyCode.ENTER);
+                vl.addComponents(name, submit);
+                vl.setComponentAlignment(submit, Alignment.BOTTOM_RIGHT);
+                win.setContent(vl);
+                UI.getCurrent().addWindow(win);
+            } else {
+                MyNotification.SHOW(Messages.WARNING_NOT_EDITABLE, Notification.Type.WARNING_MESSAGE);
+            }
         }
     }
 
@@ -328,6 +381,9 @@ class AddItem extends Window implements Button.ClickListener {
         if(tableId.equals(Messages.CUSTOMERS)) {
             super.setCaption(Messages.ADD_CUSTOMERS);
         }
+        if(tableId.equals(Messages.FREQUENT_USERS)) {
+            super.setCaption(Messages.ADD_FREQUENT_USER);
+        }
         if(tableId.equals(Messages.SIMULATORS)) {
             super.setCaption(Messages.ADD_SIM);
             ttl = new CheckBox(Messages.HAS_TTL, false);
@@ -364,6 +420,9 @@ class AddItem extends Window implements Button.ClickListener {
                 try {
                     if(tableId.equals(Messages.CUSTOMERS)) {
                         Queries.INSERT_TABLE(db, "stl_customers", name.getValue());
+                    }
+                    if(tableId.equals(Messages.FREQUENT_USERS)) {
+                        Queries.INSERT_TABLE(db, "stl_frequent_users", name.getValue());
                     }
                     if(tableId.equals(Messages.SIMULATORS)) {
                         int ttlValue = 0;

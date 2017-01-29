@@ -16,6 +16,7 @@ public class Constants {
     public final static int SUPER_ADMIN = 5;
     
     public final static MyItem CUSTOMERS_ITEM = new MyItem(0, "Customers");
+    public final static MyItem FREQUENT_USERS_ITEM = new MyItem(3, "Frequent Users");
     public final static MyItem SIMULATORS_ITEM = new MyItem(1, "Simulators");
     public final static MyItem SIMULATORS_STATUS_ITEM = new MyItem(2, "Simulators Status");
     
