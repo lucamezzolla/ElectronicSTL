@@ -76,10 +76,10 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         layout.setMargin(true);
         layout.setSpacing(true);
         layout.setSizeFull();
-        format = new SimpleDateFormat("dd-MMM-yyyy (HH:mm)");
-        defects = new MyItem(1, Messages.SIMULATOR+" "+Messages.DEFECTS);
-        deferred = new MyItem(2, Messages.DEFERRED_ITEMS);
-        mitigation = new MyItem(3, Messages.MITIGATION_PROCEDURES);
+        format = new SimpleDateFormat("dd-MM-yyyy (HH:mm)");
+        defects = Constants.DEFECT_ITEM;
+        deferred = Constants.DEFERRED_ITEMS_ITEM;
+        mitigation = Constants.MITIGATION_PROCEDURE_ITEM;
         advancedCombo = MyUtilities.buildComboBox(Messages.TAB_TECNHICAL_AREA);
         advancedCombo.addItem(defects);
         advancedCombo.addItem(deferred);
@@ -325,7 +325,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         //DEFERRED ITEM
         if(((MyItem)event.getProperty().getValue()).getId() == 2) {
             MyNotification.SHOW("Under Construction!", Type.WARNING_MESSAGE);
-//            selectSim.setVisible(false);
+//            selectSim.setVisible(true);
 //            submit.setVisible(false);
 //            upload.setVisible(true);
 //            receiver.setTypeId(1);

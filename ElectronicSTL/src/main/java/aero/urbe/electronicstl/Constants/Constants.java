@@ -20,5 +20,8 @@ public class Constants {
     public final static MyItem SIMULATORS_ITEM = new MyItem(1, "Simulators");
     public final static MyItem SIMULATORS_STATUS_ITEM = new MyItem(2, "Simulators Status");
     
+    public final static MyItem DEFECT_ITEM = new MyItem(1, Messages.SIMULATOR+" "+Messages.DEFECTS);
+    public final static MyItem DEFERRED_ITEMS_ITEM = new MyItem(2, Messages.DEFERRED_ITEMS);
+    public final static MyItem MITIGATION_PROCEDURE_ITEM = new MyItem(2, Messages.MITIGATION_PROCEDURES);
     
 }
