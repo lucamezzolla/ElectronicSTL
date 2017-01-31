@@ -11,16 +11,6 @@ public class TechnicalItem {
     private int id = -1;
     private int technicalItemId;
     private String name;
-    private String format;
-    private Blob blob;
-
-    public Blob getBlob() {
-        return blob;
-    }
-
-    public void setBlob(Blob blob) {
-        this.blob = blob;
-    }
 
     public int getId() {
         return id;
@@ -44,14 +34,6 @@ public class TechnicalItem {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getFormat() {
-        return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
     }
     
 }

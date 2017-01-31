@@ -87,7 +87,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         advancedCombo.addValueChangeListener(this);
         selectSim = MyUtilities.buildComboBox(Messages.SIMULATOR);
         selectSim.removeAllItems();
-        submit = new Button(Messages.SUBMIT, this);
+        submit = new Button(Messages.SEARCH, this);
         ArrayList<MyItem> sims = Queries.SELECT_SIMULATORS1(db);
         for(MyItem foo : sims) {
             selectSim.addItem(foo);
@@ -118,30 +118,24 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         receiver.setDb(db);
         receiver.setListener(new UploadInterface() {
             @Override
-            public void uploadTable(int type) {
-                technicalItemsTable.removeAllItems();
-                ArrayList<TechnicalItem> items = Queries.SELECT_TECHNICAL_ITEMS(db, type);
-                if(items.size() > 0) {
-                    for(int i = 0; i < items.size(); i++) {
-                        TechnicalItem foo = items.get(i);
-                        Button trash = new Button(VaadinIcons.MINUS);
-                        trash.setStyleName(Runo.BUTTON_SMALL);
-                        trash.setId(String.valueOf(foo.getId()));
-                        technicalItemsTable.addItem(new Object[] { trash, foo.getName() }, foo);
-                    }
-                    technicalItemsTable.setVisible(true);
-                } else {
-                    technicalItemsTable.setVisible(false);
-                }
+            public void uploadTable() {
+                submit.click();
             }
         });
         upload = new Upload();
         upload.setReceiver(receiver);
         upload.addSucceededListener(receiver);
-        upload.setVisible(false);
+        advancedCombo.setWidthUndefined();
+        selectSim.setWidthUndefined();
         hl = new HorizontalLayout();
         hl.setSpacing(true);
+        hl.setWidth("100%");
         hl.addComponents(advancedCombo, selectSim, submit, upload);
+        hl.setExpandRatio(advancedCombo, 0.1f);
+        hl.setExpandRatio(selectSim, 0.1f);
+        hl.setExpandRatio(submit, 0.1f);
+        hl.setExpandRatio(upload, 0.7f);
+        hl.setComponentAlignment(upload, Alignment.BOTTOM_RIGHT);
         hl.setComponentAlignment(submit, Alignment.BOTTOM_LEFT);
         //----------------------------------------------------------
         defectsTableItemClickListner = new ItemClickEvent.ItemClickListener() {
@@ -311,76 +305,85 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
                 MyNotification.SHOW("No defect found!", Notification.Type.WARNING_MESSAGE);
             }
         }
+        if(((MyItem) advancedCombo.getValue()).equals(deferred)) {
+            receiver.setTypeId(2);
+            receiver.setSimulatorId(((MyItem)selectSim.getValue()).getId());
+            defectsTable.setVisible(false);
+            technicalItemsTable.removeAllItems();
+            ArrayList<TechnicalItem> items = Queries.SELECT_TECHNICAL_ITEMS(db, 2, ((MyItem)selectSim.getValue()).getId());
+            if(items.size() > 0) {
+                for(int i = 0; i < items.size(); i++) {
+                    final TechnicalItem foo = items.get(i);
+                    Button trash = new Button(VaadinIcons.MINUS);
+                    trash.addClickListener(new Button.ClickListener() {
+                        @Override
+                        public void buttonClick(Button.ClickEvent event) {
+                            Queries.REMOVE_ITEM(db, foo.getId());
+                            submit.click();
+                        }
+                    });
+                    trash.setStyleName(Runo.BUTTON_SMALL);
+                    trash.setId(String.valueOf(foo.getId()));
+                    technicalItemsTable.addItem(new Object[] { trash, foo.getName() }, foo);
+                }
+                technicalItemsTable.setVisible(true);
+            } else {
+                technicalItemsTable.setVisible(false);
+            }
+        }
+        if(((MyItem) advancedCombo.getValue()).equals(mitigation)) {
+            receiver.setTypeId(3);
+            receiver.setSimulatorId(((MyItem)selectSim.getValue()).getId());
+            defectsTable.setVisible(false);
+            technicalItemsTable.removeAllItems();
+            ArrayList<TechnicalItem> items = Queries.SELECT_TECHNICAL_ITEMS(db, 3, ((MyItem)selectSim.getValue()).getId());
+            if(items.size() > 0) {
+                for(int i = 0; i < items.size(); i++) {
+                    TechnicalItem foo = items.get(i);
+                    Button trash = new Button(VaadinIcons.MINUS);
+                    trash.setStyleName(Runo.BUTTON_SMALL);
+                    trash.setId(String.valueOf(foo.getId()));
+                    trash.setWidth("100%");
+                    technicalItemsTable.addItem(new Object[] { trash, foo.getName() }, foo);
+                }
+                technicalItemsTable.setVisible(true);
+            } else {
+                technicalItemsTable.setVisible(false);
+            }
+        }
     }
 
     @Override
     public void valueChange(Property.ValueChangeEvent event) {
         //SIMULATOR STATUS
         if(((MyItem)event.getProperty().getValue()).getId() == 1) {
-            selectSim.setVisible(true);
-            submit.setVisible(true);
-            upload.setVisible(false);
+            upload.setEnabled(false);
             technicalItemsTable.setVisible(false);
         }
         //DEFERRED ITEM
         if(((MyItem)event.getProperty().getValue()).getId() == 2) {
-            MyNotification.SHOW("Under Construction!", Type.WARNING_MESSAGE);
-//            selectSim.setVisible(true);
-//            submit.setVisible(false);
-//            upload.setVisible(true);
-//            receiver.setTypeId(1);
-//            defectsTable.setVisible(false);
-//            technicalItemsTable.removeAllItems();
-//            ArrayList<TechnicalItem> items = Queries.SELECT_TECHNICAL_ITEMS(db, 1);
-//            if(items.size() > 0) {
-//                for(int i = 0; i < items.size(); i++) {
-//                    TechnicalItem foo = items.get(i);
-//                    Button trash = new Button(VaadinIcons.MINUS);
-//                    trash.setStyleName(Runo.BUTTON_SMALL);
-//                    trash.setId(String.valueOf(foo.getId()));
-//                    technicalItemsTable.addItem(new Object[] { trash, foo.getName() }, foo);
-//                }
-//                technicalItemsTable.setVisible(true);
-//            } else {
-//                technicalItemsTable.setVisible(false);
-//            }
+            selectSim.setVisible(true);
+            submit.setVisible(true);
+            upload.setEnabled(true);
         }
         //MITIGATION PROCEDURE
         if(((MyItem)event.getProperty().getValue()).getId() == 3) {
-            MyNotification.SHOW("Under Construction!", Type.WARNING_MESSAGE);
-//            selectSim.setVisible(false);
-//            submit.setVisible(false);
-//            upload.setVisible(true);
-//            receiver.setTypeId(2);
-//            defectsTable.setVisible(false);
-//            technicalItemsTable.removeAllItems();
-//            ArrayList<TechnicalItem> items = Queries.SELECT_TECHNICAL_ITEMS(db, 2);
-//            if(items.size() > 0) {
-//                for(int i = 0; i < items.size(); i++) {
-//                    TechnicalItem foo = items.get(i);
-//                    Button trash = new Button(VaadinIcons.MINUS);
-//                    trash.setStyleName(Runo.BUTTON_SMALL);
-//                    trash.setId(String.valueOf(foo.getId()));
-//                    trash.setWidth("100%");
-//                    technicalItemsTable.addItem(new Object[] { trash, foo.getName() }, foo);
-//                }
-//                technicalItemsTable.setVisible(true);
-//            } else {
-//                technicalItemsTable.setVisible(false);
-//            }
+            selectSim.setVisible(true);
+            submit.setVisible(true);
+            upload.setEnabled(true);
         }
     }
 
 }
 
 interface UploadInterface {
-    void uploadTable(int type);
+    void uploadTable();
 }
 
 class Uploader implements Receiver, SucceededListener {
     
     public File file;
-    private int typeId;
+    private int typeId, simulatorId;
     private jdb db;
     private UploadInterface listener;
 
@@ -402,22 +405,31 @@ class Uploader implements Receiver, SucceededListener {
     public void setTypeId(int type) {
         typeId = type;
     }
+
+    public void setSimulatorId(int simulatorId) {
+        this.simulatorId = simulatorId;
+    }
     
     public void setDb(jdb db1) {
         db = db1;
     }
 
     public void uploadSucceeded(SucceededEvent event) {
-        try {
-            FileInputStream inputStream = new FileInputStream(file);
-            Queries.INSERT_FILE(db, file.getName(), inputStream, typeId);
-            inputStream.close();
-            file.delete();
-            if(listener != null) {
-                listener.uploadTable(typeId);
+        if(file != null) {
+            try {
+                FileInputStream inputStream = new FileInputStream(file);
+                Queries.INSERT_FILE(db, file.getName(), inputStream, typeId, simulatorId);
+                MyNotification.SHOW("Added!", Type.HUMANIZED_MESSAGE);
+                inputStream.close();
+                file.delete();
+                if(listener != null) {
+                    listener.uploadTable();
+                }
+            } catch(Exception ex) {
+                MyNotification.SHOW(Messages.ERROR, Messages.ERROR_GENERIC, Notification.Type.ERROR_MESSAGE);
             }
-        } catch(Exception ex) {
-            MyNotification.SHOW(Messages.ERROR, Messages.ERROR_GENERIC, Notification.Type.ERROR_MESSAGE);
+        } else {
+            MyNotification.SHOW("No selected file", Notification.Type.WARNING_MESSAGE);
         }
     }
     

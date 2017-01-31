@@ -27,8 +27,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -56,15 +54,15 @@ public class Queries {
         String query = "insert into "+DBNAME+table+" (name) values ('"+name+"')";
         db.update(query);
     }
-    public static void INSERT_FILE(jdb db, String name, InputStream is, int type) throws SQLException {
-        String query = "insert into "+DBNAME+"stl_technical_items (technical_item_id, name, value) values (?,?,?)";
+    public static void INSERT_FILE(jdb db, String name, InputStream is, int type, int simulatorId) throws SQLException {
+        String query = "insert into "+DBNAME+"stl_technical_items (technical_item_id, simulator_id, name, value) values (?,?,?,?)";
         PreparedStatement statement = db.prepareStatement(query);
         statement.setInt(1, type);
-        statement.setString(2, name);
-        statement.setBlob(3, is);
+        statement.setInt(2, simulatorId);
+        statement.setString(3, name);
+        statement.setBlob(4, is);
         statement.executeUpdate();
         statement.close();
-        db.update(query);
     }
     /***
      * 
@@ -305,7 +303,7 @@ public class Queries {
             if(rs.next()) {
                 item = new FileItem();
                 item.setName(rs.getString(1));
-                item.setIs(rs.getBinaryStream(2));
+                item.setIs(rs.getBlob(2).getBinaryStream());
                 rs.close();
             }
         } catch (SQLException ex) {
@@ -313,10 +311,11 @@ public class Queries {
         }
         return item;
     }
-    public static ArrayList<TechnicalItem> SELECT_TECHNICAL_ITEMS(jdb db, int techId) {
+    public static ArrayList<TechnicalItem> SELECT_TECHNICAL_ITEMS(jdb db, int techId, int simulatorId) {
         ArrayList<TechnicalItem> array = new ArrayList<>();
         try {
-            String query = "select id, technical_item_id, name, value from "+DBNAME+"stl_technical_items where technical_item_id = '"+techId+"'";
+            String query = "select id, technical_item_id, name from "+DBNAME+"stl_technical_items "
+                    + "where technical_item_id = '"+techId+"' and simulator_id = '"+simulatorId+"'";
             ResultSet rs = db.query(query);
             if(rs.next()) {
                 rs.beforeFirst();
@@ -325,7 +324,6 @@ public class Queries {
                     foo.setId(rs.getInt(1));
                     foo.setTechnicalItemId(rs.getInt(2));
                     foo.setName(rs.getString(3));                 
-                    foo.setBlob(rs.getBlob(4));
                     array.add(foo);
                 }
                 rs.close();
@@ -808,6 +806,14 @@ public class Queries {
             Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
         }
         return array;
+    }
+
+    public static void REMOVE_ITEM(jdb db, int id) {
+        try {
+            db.update("delete from "+DBNAME+"stl_technical_items where id = "+id);
+        } catch(Exception ex) {
+            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+        }
     }
     
 }

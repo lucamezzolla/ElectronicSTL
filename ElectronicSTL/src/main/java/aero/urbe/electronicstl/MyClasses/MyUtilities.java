@@ -57,6 +57,7 @@ public class MyUtilities {
         ComboBox foo = new ComboBox();
         if(caption != null) foo.setCaption(caption);
         foo.setWidth("100%");
+        foo.setImmediate(true);
         foo.setNullSelectionAllowed(false);
         foo.setTextInputAllowed(false);
         return foo;
