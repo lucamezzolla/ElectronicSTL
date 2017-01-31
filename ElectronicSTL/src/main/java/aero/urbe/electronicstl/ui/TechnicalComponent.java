@@ -133,6 +133,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         hl.setSpacing(true);
         hl.setWidth("100%");
         hl.addComponents(advancedCombo, selectSim, submit, upload);
+        upload.setEnabled(false);
         hl.setExpandRatio(advancedCombo, 0.1f);
         hl.setExpandRatio(selectSim, 0.1f);
         hl.setExpandRatio(submit, 0.1f);
@@ -371,6 +372,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         //SIMULATOR STATUS
         if(((MyItem)event.getProperty().getValue()).getId() == 1) {
             technicalItemsTable.setVisible(false);
+            upload.setEnabled(false);
         }
         //DEFERRED ITEM
         if(((MyItem)event.getProperty().getValue()).getId() == 2) {
