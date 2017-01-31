@@ -85,6 +85,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         advancedCombo.addItem(deferred);
         advancedCombo.addItem(mitigation);
         advancedCombo.addValueChangeListener(this);
+        advancedCombo.setImmediate(true);
         selectSim = MyUtilities.buildComboBox(Messages.SIMULATOR);
         selectSim.removeAllItems();
         submit = new Button(Messages.SEARCH, this);
@@ -114,6 +115,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         } else {
             submit.setEnabled(false);
         }
+        selectSim.setImmediate(true);
         receiver = new Uploader();
         receiver.setDb(db);
         receiver.setListener(new UploadInterface() {
@@ -277,6 +279,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
     @Override
     public void buttonClick(Button.ClickEvent event) {
         if(((MyItem) advancedCombo.getValue()).equals(defects)) {
+            upload.setEnabled(false);
             MyItem simulatorItem = (MyItem) selectSim.getValue();
             ArrayList<DefectItem> defectsArray = Queries.SELECT_DEFECTS(db, simulatorItem.getId());
             if(defectsArray.size() > 0) {
@@ -306,6 +309,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
             }
         }
         if(((MyItem) advancedCombo.getValue()).equals(deferred)) {
+            upload.setEnabled(true);
             receiver.setTypeId(2);
             receiver.setSimulatorId(((MyItem)selectSim.getValue()).getId());
             defectsTable.setVisible(false);
@@ -315,6 +319,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
                 for(int i = 0; i < items.size(); i++) {
                     final TechnicalItem foo = items.get(i);
                     Button trash = new Button(VaadinIcons.MINUS);
+                    trash.setWidth("100%");
                     trash.addClickListener(new Button.ClickListener() {
                         @Override
                         public void buttonClick(Button.ClickEvent event) {
@@ -332,6 +337,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
             }
         }
         if(((MyItem) advancedCombo.getValue()).equals(mitigation)) {
+            upload.setEnabled(true);
             receiver.setTypeId(3);
             receiver.setSimulatorId(((MyItem)selectSim.getValue()).getId());
             defectsTable.setVisible(false);
@@ -339,11 +345,18 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
             ArrayList<TechnicalItem> items = Queries.SELECT_TECHNICAL_ITEMS(db, 3, ((MyItem)selectSim.getValue()).getId());
             if(items.size() > 0) {
                 for(int i = 0; i < items.size(); i++) {
-                    TechnicalItem foo = items.get(i);
+                    final TechnicalItem foo = items.get(i);
                     Button trash = new Button(VaadinIcons.MINUS);
+                    trash.setWidth("100%");
+                    trash.addClickListener(new Button.ClickListener() {
+                        @Override
+                        public void buttonClick(Button.ClickEvent event) {
+                            Queries.REMOVE_ITEM(db, foo.getId());
+                            submit.click();
+                        }
+                    });
                     trash.setStyleName(Runo.BUTTON_SMALL);
                     trash.setId(String.valueOf(foo.getId()));
-                    trash.setWidth("100%");
                     technicalItemsTable.addItem(new Object[] { trash, foo.getName() }, foo);
                 }
                 technicalItemsTable.setVisible(true);
@@ -357,20 +370,17 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
     public void valueChange(Property.ValueChangeEvent event) {
         //SIMULATOR STATUS
         if(((MyItem)event.getProperty().getValue()).getId() == 1) {
-            upload.setEnabled(false);
             technicalItemsTable.setVisible(false);
         }
         //DEFERRED ITEM
         if(((MyItem)event.getProperty().getValue()).getId() == 2) {
             selectSim.setVisible(true);
             submit.setVisible(true);
-            upload.setEnabled(true);
         }
         //MITIGATION PROCEDURE
         if(((MyItem)event.getProperty().getValue()).getId() == 3) {
             selectSim.setVisible(true);
             submit.setVisible(true);
-            upload.setEnabled(true);
         }
     }
 
