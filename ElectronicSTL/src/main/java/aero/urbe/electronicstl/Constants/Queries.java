@@ -125,7 +125,7 @@ public class Queries {
                     + "values ('"+simulatorId+"', '"+statusId+"', '"+dateStr+"')";
             db.update(query);
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,7 +174,7 @@ public class Queries {
                 rs.close();
             }
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return user;
     }
@@ -193,7 +193,7 @@ public class Queries {
                 rs.close();
             }
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return collection;
     }
@@ -215,7 +215,7 @@ public class Queries {
                 rs.close();
             }
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return item;
     }
@@ -241,7 +241,7 @@ public class Queries {
                 table.setVisible(false);
             }
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
     }
     public static ArrayList<Object> SELECT_USER(jdb db, Integer id) {
@@ -261,7 +261,7 @@ public class Queries {
                 rs.close();
             }
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return array;
     }
@@ -291,7 +291,7 @@ public class Queries {
                 rs.close();
             }
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return array;
     }
@@ -307,7 +307,7 @@ public class Queries {
                 rs.close();
             }
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return item;
     }
@@ -330,7 +330,7 @@ public class Queries {
             }
             return array;
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return array;
     }
@@ -405,7 +405,7 @@ public class Queries {
                 rs.close();
             }
         } catch(SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return item;
     }
@@ -451,7 +451,7 @@ public class Queries {
                 rs.close();
             }
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return array;
     }
@@ -475,7 +475,7 @@ public class Queries {
                 rs.close();
             }
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return array;
     }
@@ -511,7 +511,7 @@ public class Queries {
                 rs.close();
             }
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return array;
     }
@@ -547,7 +547,7 @@ public class Queries {
                 rs.close();
             }
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return array;
     }
@@ -565,7 +565,7 @@ public class Queries {
                 rs.close();
             }
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return array;
     }
@@ -583,7 +583,7 @@ public class Queries {
                 rs.close();
             }
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return array;
     }
@@ -604,7 +604,7 @@ public class Queries {
                 rs.close();
             }
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return array;
     }
@@ -618,7 +618,7 @@ public class Queries {
                 rs.close();
             }
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return count;
     }
@@ -635,7 +635,7 @@ public class Queries {
                 rs.close();
             }
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return array;
     }
@@ -649,7 +649,7 @@ public class Queries {
             String query = "update "+DBNAME+"stl_simulators set actual_ttl = '"+valueStr+"' where id = '"+id+"'";
             db.update(query);
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
     }
     public static void UPDATE_USER(jdb db, HashMap<String, String> values, Integer id) throws Exception {
@@ -660,7 +660,7 @@ public class Queries {
                     + "where id = '"+id+"'";
             db.update(query);
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
     }
     public static void UPDATE_PASSWORD(jdb db, String password, Integer id) throws Exception {
@@ -669,7 +669,7 @@ public class Queries {
             String query = "update "+DBNAME+"stl_users set password = md5('"+passStr+"') where id = '"+id+"'";
             db.update(query);
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
     }
     public static void UPDATE_PASSWORD(jdb db, String password, String email) throws Exception {
@@ -678,7 +678,7 @@ public class Queries {
             String query = "update "+DBNAME+"stl_users set password = md5('"+passStr+"') where email = '"+email+"'";
             db.update(query);
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
     }
     public static void UPDATE_DEFECT(jdb db, int id, int defectTypeId, String sysCode, String subCode, String ataDesc, String correction, String dateEndStr, int solvedValue) throws Exception {
@@ -702,7 +702,7 @@ public class Queries {
             db.update(query);
             MyNotification.SHOW(Messages.SUCCESS, Messages.DB_UPDATED, Type.HUMANIZED_MESSAGE, 3000);
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
     }
     public static final void UPLOAD_TABLE(jdb db, String table, Integer id, String newValue) {
@@ -710,7 +710,7 @@ public class Queries {
             String query = "update "+table+" set name = '"+newValue+"' where id = '"+id+"'";
             db.update(query);
         } catch (SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -749,7 +749,7 @@ public class Queries {
                 }
             }
         } catch(SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return array;
     }
@@ -776,7 +776,7 @@ public class Queries {
                 }
             }
         } catch(SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return array;
     }
@@ -803,7 +803,7 @@ public class Queries {
                 }
             }
         } catch(SQLException ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
         return array;
     }
@@ -812,7 +812,7 @@ public class Queries {
         try {
             db.update("delete from "+DBNAME+"stl_technical_items where id = "+id);
         } catch(Exception ex) {
-            Notification.show(Messages.ERROR, Messages.ERROR_GENERIC, Type.ERROR_MESSAGE);
+            Notification.show(Messages.ERROR, ex.getMessage(), Type.ERROR_MESSAGE);
         }
     }
     

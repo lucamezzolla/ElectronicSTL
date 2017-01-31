@@ -177,7 +177,7 @@ public class LogBookComponent extends CustomComponent implements Button.ClickLis
                 Date start = from.getValue();
                 Date end = to.getValue();
                 start.setHours(0); start.setMinutes(0); start.setSeconds(0);
-                end.setHours(0); end.setMinutes(0); end.setSeconds(0);
+                end.setHours(23); end.setMinutes(59); end.setSeconds(59);
                 if(start != null || end != null) {
                     if(end.getTime() <= start.getTime()) {
                         MyNotification.SHOW(Messages.ERROR, Messages.ERROR_DATES, Notification.Type.ERROR_MESSAGE);

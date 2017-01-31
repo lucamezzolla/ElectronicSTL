@@ -11,6 +11,7 @@ import aero.urbe.electronicstl.MyClasses.MyUtilities;
 import aero.urbe.electronicstl.MyClasses.TechnicalItem;
 import aero.urbe.electronicstl.MyClasses.User;
 import aero.urbe.electronicstl.jdb;
+import com.oracle.webservices.internal.api.message.PropertySet;
 import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ItemClickEvent;
@@ -93,22 +94,22 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         for(MyItem foo : sims) {
             selectSim.addItem(foo);
         }
-        selectSim.addFocusListener(new FieldEvents.FocusListener() {
-            @Override
-            public void focus(FieldEvents.FocusEvent event) {
-                selectSim.removeAllItems();
-                ArrayList<MyItem> sims = Queries.SELECT_SIMULATORS1(db);
-                for(MyItem foo : sims) {
-                    selectSim.addItem(foo);
-                }
-                if(selectSim.size() > 0) {
-                    selectSim.select(selectSim.getItemIds().iterator().next());
-                    submit.setEnabled(true);
-                } else {
-                    submit.setEnabled(false);
-                }
-            }
-        });
+//        selectSim.addFocusListener(new FieldEvents.FocusListener() {
+//            @Override
+//            public void focus(FieldEvents.FocusEvent event) {
+//                selectSim.removeAllItems();
+//                ArrayList<MyItem> sims = Queries.SELECT_SIMULATORS1(db);
+//                for(MyItem foo : sims) {
+//                    selectSim.addItem(foo);
+//                }
+//                if(selectSim.size() > 0) {
+//                    selectSim.select(selectSim.getItemIds().iterator().next());
+//                    submit.setEnabled(true);
+//                } else {
+//                    submit.setEnabled(false);
+//                }
+//            }
+//        });
         if(selectSim.size() > 0) {
             selectSim.select(selectSim.getItemIds().iterator().next());
             submit.setEnabled(true);
@@ -116,6 +117,14 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
             submit.setEnabled(false);
         }
         selectSim.setImmediate(true);
+        selectSim.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if(selectSim.size() > 0) {
+                    submit.click();
+                }
+            }
+        });     
         receiver = new Uploader();
         receiver.setDb(db);
         receiver.setListener(new UploadInterface() {
@@ -134,6 +143,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         hl.setWidth("100%");
         hl.addComponents(advancedCombo, selectSim, submit, upload);
         upload.setEnabled(false);
+        submit.setVisible(false);
         hl.setExpandRatio(advancedCombo, 0.1f);
         hl.setExpandRatio(selectSim, 0.1f);
         hl.setExpandRatio(submit, 0.1f);
@@ -376,13 +386,12 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         }
         //DEFERRED ITEM
         if(((MyItem)event.getProperty().getValue()).getId() == 2) {
-            selectSim.setVisible(true);
-            submit.setVisible(true);
+            submit.click();
         }
         //MITIGATION PROCEDURE
         if(((MyItem)event.getProperty().getValue()).getId() == 3) {
-            selectSim.setVisible(true);
-            submit.setVisible(true);
+            upload.setEnabled(false);
+            submit.click();
         }
     }
 
