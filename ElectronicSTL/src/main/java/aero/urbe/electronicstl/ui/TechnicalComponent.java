@@ -26,6 +26,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
@@ -65,6 +66,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
     private final Table technicalItemsTable;
     private final Upload upload;
     private final Uploader receiver;
+    private final ProgressBar pb;
 
     public TechnicalComponent(final jdb db, User user) {
         this.db = db;
@@ -106,26 +108,48 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
                     submit.click();
                 }
             }
-        });     
+        });   
+        pb = new ProgressBar();
+        pb.setWidth("250px");
+        pb.setValue(0f);
+        pb.setVisible(false);
         receiver = new Uploader();
         receiver.setDb(db);
         receiver.setListener(new UploadInterface() {
             @Override
             public void uploadTable() {
                 submit.click();
+                pb.setValue(0f);
+                pb.setCaption("");
             }
         });
         upload = new Upload();
+        upload.setButtonCaption("Add file...");
         upload.setImmediate(true);
         upload.setReceiver(receiver);
+        upload.addProgressListener(new Upload.ProgressListener() {
+            @Override
+            public void updateProgress(long readBytes, long contentLength) {
+                pb.setVisible(true);
+                Float value = new Float(readBytes / (float) contentLength);
+                pb.setValue(value);
+                if (value < 1.0)
+                    pb.setCaption(((int)(value*100)) + "% done");
+                else {
+                    pb.setCaption("all done");
+                    pb.setVisible(false);
+                }
+            }
+        });
         upload.addSucceededListener(receiver);
         upload.setVisible(false);
         advancedCombo.setWidthUndefined();
         selectSim.setWidthUndefined();
         hl = new HorizontalLayout();
         hl.setSpacing(true);
-        hl.addComponents(advancedCombo, selectSim, submit, upload);
+        hl.addComponents(upload, advancedCombo, selectSim, submit, pb);
         hl.setComponentAlignment(upload, Alignment.BOTTOM_LEFT);
+        //hl.setComponentAlignment(pb, Alignment.BOTTOM_LEFT);
         submit.setVisible(false);
         //----------------------------------------------------------
         defectsTableItemClickListner = new ItemClickEvent.ItemClickListener() {
