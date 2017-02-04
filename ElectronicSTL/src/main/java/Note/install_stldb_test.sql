@@ -1,9 +1,10 @@
+USE stldb_test;
 -- phpMyAdmin SQL Dump
 -- version 4.6.6
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Creato il: Gen 31, 2017 alle 18:11
+-- Creato il: Feb 04, 2017 alle 14:47
 -- Versione del server: 5.5.47-MariaDB
 -- Versione PHP: 5.6.14
 
@@ -63,6 +64,15 @@ CREATE TABLE `stl_defect_type` (
   `name` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dump dei dati per la tabella `stl_defect_type`
+--
+
+INSERT INTO `stl_defect_type` (`id`, `name`) VALUES
+(1, 'Discrepancy'),
+(2, 'Interruption'),
+(3, 'Snag');
+
 -- --------------------------------------------------------
 
 --
@@ -73,6 +83,17 @@ CREATE TABLE `stl_device_performance` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dump dei dati per la tabella `stl_device_performance`
+--
+
+INSERT INTO `stl_device_performance` (`id`, `name`) VALUES
+(1, 'Unsatisfactory'),
+(2, 'Poor'),
+(3, 'Acceptable'),
+(4, 'Good'),
+(5, 'Excellent');
 
 -- --------------------------------------------------------
 
@@ -96,6 +117,17 @@ CREATE TABLE `stl_levels` (
   `name` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dump dei dati per la tabella `stl_levels`
+--
+
+INSERT INTO `stl_levels` (`id`, `name`) VALUES
+(1, 'User'),
+(2, 'Device User'),
+(3, 'Technical'),
+(4, 'Administrator'),
+(5, 'Super Administrator');
+
 -- --------------------------------------------------------
 
 --
@@ -106,6 +138,15 @@ CREATE TABLE `stl_maintenance_type` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dump dei dati per la tabella `stl_maintenance_type`
+--
+
+INSERT INTO `stl_maintenance_type` (`id`, `name`) VALUES
+(1, 'Preventive Maintenance'),
+(2, 'Scheduled Maintenance'),
+(3, 'Unscheduled Maintenance');
 
 -- --------------------------------------------------------
 
@@ -153,6 +194,18 @@ CREATE TABLE `stl_periodical_test` (
   `name` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dump dei dati per la tabella `stl_periodical_test`
+--
+
+INSERT INTO `stl_periodical_test` (`id`, `name`) VALUES
+(1, 'QTG'),
+(2, 'Flyout'),
+(3, 'NAV DATA Update'),
+(4, 'IOS DATA Update'),
+(5, 'Video Calibration'),
+(6, 'Transport Delay');
+
 -- --------------------------------------------------------
 
 --
@@ -190,6 +243,15 @@ CREATE TABLE `stl_simulator_status` (
   `id` tinyint(4) NOT NULL,
   `name` varchar(45) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dump dei dati per la tabella `stl_simulator_status`
+--
+
+INSERT INTO `stl_simulator_status` (`id`, `name`) VALUES
+(1, 'STD Down'),
+(2, 'Available with mitigations'),
+(3, 'Available');
 
 -- --------------------------------------------------------
 
@@ -229,6 +291,21 @@ CREATE TABLE `stl_training_type` (
   `name` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dump dei dati per la tabella `stl_training_type`
+--
+
+INSERT INTO `stl_training_type` (`id`, `name`) VALUES
+(1, 'Training'),
+(2, 'Check'),
+(3, 'Engineering'),
+(4, 'Maintenance'),
+(5, 'Regualar Authority'),
+(6, 'Other (ex. Demo)'),
+(7, 'Compliance Monitoring'),
+(8, 'Safety Monitoring'),
+(9, 'Periodical Test');
+
 -- --------------------------------------------------------
 
 --
@@ -260,8 +337,7 @@ ALTER TABLE `stl_customers`
 -- Indici per le tabelle `stl_defects`
 --
 ALTER TABLE `stl_defects`
-  ADD UNIQUE KEY `id` (`id`),
-  ADD UNIQUE KEY `defect_index` (`simulator_id`,`datetime_start`,`solved`);
+  ADD UNIQUE KEY `id` (`id`);
 
 --
 -- Indici per le tabelle `stl_defect_type`
@@ -373,7 +449,7 @@ ALTER TABLE `stl_device_performance`
 -- AUTO_INCREMENT per la tabella `stl_frequent_users`
 --
 ALTER TABLE `stl_frequent_users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- AUTO_INCREMENT per la tabella `stl_maintenance_type`
 --
@@ -383,7 +459,7 @@ ALTER TABLE `stl_maintenance_type`
 -- AUTO_INCREMENT per la tabella `stl_pages`
 --
 ALTER TABLE `stl_pages`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT per la tabella `stl_periodical_test`
 --
@@ -408,7 +484,7 @@ ALTER TABLE `stl_simulator_status_values`
 -- AUTO_INCREMENT per la tabella `stl_technical_items`
 --
 ALTER TABLE `stl_technical_items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT per la tabella `stl_training_type`
 --

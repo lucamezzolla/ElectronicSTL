@@ -11,9 +11,7 @@ import aero.urbe.electronicstl.MyClasses.MyUtilities;
 import aero.urbe.electronicstl.MyClasses.TechnicalItem;
 import aero.urbe.electronicstl.MyClasses.User;
 import aero.urbe.electronicstl.jdb;
-import com.oracle.webservices.internal.api.message.PropertySet;
 import com.vaadin.data.Property;
-import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FileResource;
@@ -94,22 +92,6 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         for(MyItem foo : sims) {
             selectSim.addItem(foo);
         }
-//        selectSim.addFocusListener(new FieldEvents.FocusListener() {
-//            @Override
-//            public void focus(FieldEvents.FocusEvent event) {
-//                selectSim.removeAllItems();
-//                ArrayList<MyItem> sims = Queries.SELECT_SIMULATORS1(db);
-//                for(MyItem foo : sims) {
-//                    selectSim.addItem(foo);
-//                }
-//                if(selectSim.size() > 0) {
-//                    selectSim.select(selectSim.getItemIds().iterator().next());
-//                    submit.setEnabled(true);
-//                } else {
-//                    submit.setEnabled(false);
-//                }
-//            }
-//        });
         if(selectSim.size() > 0) {
             selectSim.select(selectSim.getItemIds().iterator().next());
             submit.setEnabled(true);
@@ -134,22 +116,17 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
             }
         });
         upload = new Upload();
+        upload.setImmediate(true);
         upload.setReceiver(receiver);
         upload.addSucceededListener(receiver);
+        upload.setVisible(false);
         advancedCombo.setWidthUndefined();
         selectSim.setWidthUndefined();
         hl = new HorizontalLayout();
         hl.setSpacing(true);
-        hl.setWidth("100%");
         hl.addComponents(advancedCombo, selectSim, submit, upload);
-        upload.setEnabled(false);
+        hl.setComponentAlignment(upload, Alignment.BOTTOM_LEFT);
         submit.setVisible(false);
-        hl.setExpandRatio(advancedCombo, 0.1f);
-        hl.setExpandRatio(selectSim, 0.1f);
-        hl.setExpandRatio(submit, 0.1f);
-        hl.setExpandRatio(upload, 0.7f);
-        hl.setComponentAlignment(upload, Alignment.BOTTOM_RIGHT);
-        hl.setComponentAlignment(submit, Alignment.BOTTOM_LEFT);
         //----------------------------------------------------------
         defectsTableItemClickListner = new ItemClickEvent.ItemClickListener() {
             @Override
@@ -171,9 +148,11 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         };
         //----------------------------------------------------------
         defectsTable = buildDefectsTable();
+        defectsTable.setCaption("Double click to edit");
         defectsTable.setVisible(false);
         defectsTable.addItemClickListener(defectsTableItemClickListner);
         technicalItemsTable = buildTechicalItemsTable();
+        technicalItemsTable.setCaption("Double click to download");
         technicalItemsTable.setVisible(false);
         technicalItemsTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
@@ -193,7 +172,6 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
                                 input.close();
                                 output.close();
                                 final Window win = new Window(fileName);
-                                win.setWidth("20%");
                                 win.setModal(true);
                                 win.setResizable(false);
                                 Button downloadButton = new Button("Download");
@@ -290,7 +268,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
     @Override
     public void buttonClick(Button.ClickEvent event) {
         if(((MyItem) advancedCombo.getValue()).equals(defects)) {
-            upload.setEnabled(false);
+            upload.setVisible(false);
             MyItem simulatorItem = (MyItem) selectSim.getValue();
             ArrayList<DefectItem> defectsArray = Queries.SELECT_DEFECTS(db, simulatorItem.getId());
             if(defectsArray.size() > 0) {
@@ -320,7 +298,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
             }
         }
         if(((MyItem) advancedCombo.getValue()).equals(deferred)) {
-            upload.setEnabled(true);
+            upload.setVisible(true);
             receiver.setTypeId(2);
             receiver.setSimulatorId(((MyItem)selectSim.getValue()).getId());
             defectsTable.setVisible(false);
@@ -348,7 +326,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
             }
         }
         if(((MyItem) advancedCombo.getValue()).equals(mitigation)) {
-            upload.setEnabled(true);
+            upload.setVisible(true);
             receiver.setTypeId(3);
             receiver.setSimulatorId(((MyItem)selectSim.getValue()).getId());
             defectsTable.setVisible(false);
@@ -382,7 +360,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         //SIMULATOR STATUS
         if(((MyItem)event.getProperty().getValue()).getId() == 1) {
             technicalItemsTable.setVisible(false);
-            upload.setEnabled(false);
+            upload.setVisible(false);
         }
         //DEFERRED ITEM
         if(((MyItem)event.getProperty().getValue()).getId() == 2) {
@@ -390,7 +368,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         }
         //MITIGATION PROCEDURE
         if(((MyItem)event.getProperty().getValue()).getId() == 3) {
-            upload.setEnabled(false);
+            upload.setVisible(false);
             submit.click();
         }
     }
