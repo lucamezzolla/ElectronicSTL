@@ -124,7 +124,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
             }
         });
         upload = new Upload();
-        upload.setButtonCaption("Add file...");
+        upload.setButtonCaption("Add file (max 10mb)...");
         upload.setImmediate(true);
         upload.setReceiver(receiver);
         upload.addProgressListener(new Upload.ProgressListener() {
@@ -449,7 +449,7 @@ class Uploader implements Receiver, SucceededListener {
                     listener.uploadTable();
                 }
             } catch(Exception ex) {
-                MyNotification.SHOW(Messages.ERROR, Messages.ERROR_GENERIC, Notification.Type.ERROR_MESSAGE);
+                MyNotification.SHOW(Messages.ERROR, "The size of the file is too large (max 10mb)!", Notification.Type.ERROR_MESSAGE);
             }
         } else {
             MyNotification.SHOW("No selected file", Notification.Type.WARNING_MESSAGE);
