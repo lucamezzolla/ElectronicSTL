@@ -62,8 +62,8 @@ public class LoginComponent extends CustomComponent implements Button.ClickListe
         hlButtons.setSpacing(true);
         vl.addComponents(userTextField, secretPasswordField, hlButtons);
         vl.setComponentAlignment(hlButtons, Alignment.MIDDLE_RIGHT);
-        userTextField.setValue("luca.mezzolla@urbe.aero");
-        secretPasswordField.setValue("trustno1");
+//        userTextField.setValue("luca.mezzolla@urbe.aero");
+//        secretPasswordField.setValue("trustno1");
     }
 
     @Override

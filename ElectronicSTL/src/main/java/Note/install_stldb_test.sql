@@ -276,7 +276,7 @@ CREATE TABLE `stl_technical_items` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `technical_item_id` int(11) NOT NULL,
   `simulator_id` int(11) NOT NULL,
-  `name` varchar(45) NOT NULL,
+  `name` varchar(255) NOT NULL,
   `value` mediumblob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
