@@ -141,6 +141,9 @@ public class LogBookComponent extends CustomComponent implements Button.ClickLis
         layout.addComponents(hl, table);
         layout.setExpandRatio(table, 1f);
         setPrivileges();
+        if(!selectSim.isEmpty()) {
+            searchButton.click();
+        }
     }
     
     @Override
@@ -203,8 +206,15 @@ public class LogBookComponent extends CustomComponent implements Button.ClickLis
     }
 
     @Override
-    public void updateTable() {
-        table.removeAllItems();
+    public void updateTable(int simulatorId) {
+        Iterator iterator = selectSim.getItemIds().iterator();
+        while(iterator.hasNext()) {
+            MyItem foo = (MyItem)iterator.next();
+            if(foo.getId() == simulatorId) {
+                selectSim.select(foo);
+            }
+        }
+        searchButton.click();
     }
 
     private void setPrivileges() {
@@ -318,7 +328,7 @@ class SelectSim extends Window implements Button.ClickListener, ConfirmDialogInt
 }
 
 interface LogBookTable {
-    void updateTable();
+    void updateTable(int simulatorId);
 }
 
 class NewPage extends Window implements Property.ValueChangeListener, Button.ClickListener, FieldEvents.TextChangeListener {
@@ -453,9 +463,9 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
         ttlStart = buildTextField(Messages.START);
         ttlStart.setHeight("24px");
         ttlEnd = new TextField();
-        ttlEnd.setCaption(Messages.END);
+        ttlEnd.setCaption(Messages.END+" *");
         ttlEnd.setWidth("100%");
-        ttlTotal = buildTextField(Messages.ACTUAL_TTL_AFTER_SESSION);
+        ttlTotal = buildTextField(Messages.ACTUAL_TTL_AFTER_SESSION+" *");
         ttlTotal.setValue("");
         ttlStart.setValue(actualTtl);
         scheduledTotal.setId("scheduledTotal");
@@ -514,7 +524,7 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
         hl2.setExpandRatio(addDefectsButton, 0.2f);
         //DEVICE USERS - STUDENTS - OBSERVERS
         HorizontalLayout hl3 = buildHorizontLayout();
-        VerticalLayout vl1_1 = buildVerticalLayout(Messages.DEVICE_USERS_CAPTION);
+        VerticalLayout vl1_1 = buildVerticalLayout(Messages.DEVICE_USERS_CAPTION+" *");
         VerticalLayout vl1_2 = buildVerticalLayout(Messages.STUDENTS);
         VerticalLayout vl1_3 = buildVerticalLayout(Messages.OBSERVERS);
         Collection<String> frequentUsers = Queries.SELECT_FREQUENT_USERS(db);
@@ -525,7 +535,7 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
         stu2 = new AutocompleteTextField(); stu2.setWidth("100%"); stu2.setImmediate(true); stu2.setMinChars(1); stu2.setSuggestionProvider(suggestionProvider);
         obs1 = new AutocompleteTextField(); obs1.setWidth("100%"); obs1.setImmediate(true); obs1.setMinChars(1); obs1.setSuggestionProvider(suggestionProvider);
         obs2 = new AutocompleteTextField(); obs2.setWidth("100%"); obs2.setImmediate(true); obs2.setMinChars(1); obs2.setSuggestionProvider(suggestionProvider);
-        dev1.setInputPrompt(Messages.DEVICE_USERS+" 1 (Required)");
+        dev1.setInputPrompt(Messages.DEVICE_USERS+" 1");
         dev2.setInputPrompt(Messages.DEVICE_USERS+" 2");
         stu1.setInputPrompt(Messages.STUDENTS+" 1");
         stu2.setInputPrompt(Messages.STUDENTS+" 2");
@@ -538,6 +548,7 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
         //REMARKS
         HorizontalLayout hl4 = buildHorizontLayout();
         remarks = new TextArea(Messages.REMARKS);
+        remarks.setInputPrompt("If NIL, leave empty this field");
         remarks.setWidth("100%");
         remarks.setHeight("50px");
         hl4.addComponent(remarks);
@@ -546,7 +557,7 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
         submit = new Button(Messages.SUBMIT, this);
         cancel = new Button(Messages.CANCEL, this);
         cancel.setStyleName(Runo.BUTTON_DEFAULT);
-        hl5.addComponents(cancel, submit);
+        hl5.addComponents(new Label("* Required Fields"),cancel, submit);
         hl5.setSizeUndefined();
         //ADD INTO VL
         vl.addComponents( 
@@ -747,7 +758,13 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
                 if(scheduledTotal.getValue().equals(Messages.ERROR) || actualTotal.getValue().equals(Messages.ERROR) || dev1.getValue().equals("")) {
                     MyNotification.SHOW(Messages.ERROR_EMPTY_FIELDS, Notification.Type.ERROR_MESSAGE);
                     return;
-                }                
+                }
+                if(ttl > 0) {
+                    if(ttlEnd.getValue().equals("") || ttlTotal.getValue().equals("")) {
+                        MyNotification.SHOW(Messages.ERROR_EMPTY_FIELDS, Notification.Type.ERROR_MESSAGE);
+                        return;
+                    }
+                }
                 //Periodical Test
                 if(((MyItem) trainingType.getValue()).getId() == 9) { //) = Periodical Test
                     if(!pt.isSetted()) {
@@ -891,7 +908,7 @@ class NewPage extends Window implements Property.ValueChangeListener, Button.Cli
                 vl.setComponentAlignment(close, Alignment.BOTTOM_RIGHT);
                 super.center();
                 if(listener != null) {
-                    listener.updateTable();
+                    listener.updateTable(this.id);
                 }
             } catch (Exception ex) {
                 MyNotification.SHOW(Messages.ERROR, Messages.ERROR_GENERIC, Notification.Type.ERROR_MESSAGE);

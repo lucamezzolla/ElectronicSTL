@@ -24,8 +24,8 @@ public class LogBookPage extends Window {
     public LogBookPage(jdb db, LogBookPageItem item) {
         this.db = db;
         this.item = item;
-        super.setWidth("80%");
-        super.setHeight("80%");
+        super.setWidth("90%");
+        super.setHeight("90%");
         super.setModal(true);
         super.setCaption("Logbook Page (ID: "+String.valueOf(item.getId())+")");
         vl = new VerticalLayout();

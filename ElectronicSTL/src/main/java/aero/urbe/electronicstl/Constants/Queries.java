@@ -598,6 +598,7 @@ public class Queries {
                     Map<String, String> ar = new HashMap<>();
                     ar.put("id", String.valueOf(rs.getInt("id")));
                     ar.put("name", rs.getString("name"));
+                    ar.put("ttl", String.valueOf(rs.getInt("ttl")));
                     ar.put("actual_ttl", rs.getString("actual_ttl"));
                     array.add(ar);
                 }

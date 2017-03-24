@@ -5,7 +5,6 @@ import aero.urbe.electronicstl.MyClasses.MyNotification;
 import aero.urbe.electronicstl.ui.MainPage;
 import com.vaadin.annotations.Push;
 import javax.servlet.annotation.WebServlet;
-
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;

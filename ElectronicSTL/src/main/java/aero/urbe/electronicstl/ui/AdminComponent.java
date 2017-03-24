@@ -234,7 +234,13 @@ public class AdminComponent extends CustomComponent implements Button.ClickListe
             array = Queries.SELECT_SIMULATORS2(db);
             if(array.size() > 0) {
                 for(Map<String, String> foo : array) {
-                    table.addItem(new Object[] { foo.get("name"), foo.get("actual_ttl") }, foo.get("id"));
+                    String ttlValue = "error";
+                    if(foo.get("ttl").equals("0")) {
+                        ttlValue = "No TTL";
+                    } else {
+                        ttlValue = foo.get("actual_ttl");
+                    }
+                    table.addItem(new Object[] { foo.get("name"), ttlValue }, foo.get("id"));
                 }
                 table.setVisible(true);
             } else {

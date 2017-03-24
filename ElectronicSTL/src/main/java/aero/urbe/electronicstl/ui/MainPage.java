@@ -36,7 +36,7 @@ import org.vaadin.teemu.VaadinIcons;
  *
  * @author Luca Mezzolla
  */
-@Push(PushMode.AUTOMATIC)
+@Push(PushMode.MANUAL)
 public class MainPage extends CustomComponent implements LoginInterface {
 
     private final jdb db;
@@ -112,12 +112,15 @@ public class MainPage extends CustomComponent implements LoginInterface {
             public void buttonClick(Button.ClickEvent event) {
                 try {
                     db.getConnection().close();
-                } catch (SQLException ex) { }
-                timerTask.cancel();
-                timer.cancel();
-                timer.purge();
-                UI.getCurrent().getSession().close();
-                Page.getCurrent().reload();
+                } catch (SQLException ex) { 
+                    System.out.println(ex.getMessage());
+                } finally {
+                    timerTask.cancel();
+                    timer.cancel();
+                    timer.purge();
+                    UI.getCurrent().getSession().close();
+                    Page.getCurrent().reload();
+                }    
             }
         });
         Label testVersionLabel = new Label("<p style='text-align: center; font-size: 30px; background-color: yellow'>TEST VERSION</p>", ContentMode.HTML);
@@ -130,9 +133,51 @@ public class MainPage extends CustomComponent implements LoginInterface {
         vl.setSpacing(false);
         vl.setComponentAlignment(logoutButton, Alignment.TOP_RIGHT);
         final TabSheet tabs = new TabSheet();
+        tabs.setSizeFull();
+        //LOGBOOK TAB
+        final LogBookComponent logbookComponent = new LogBookComponent(db, user);
+        final TechnicalComponent technicalComponent = new TechnicalComponent(db, user);
+        final UsersComponent usersComponent = new UsersComponent(db, user);
+        final Statistics statsComponent = new Statistics(db);
+        final AdminComponent adminComponent = new AdminComponent(db, user);
+        final SuperAdminComponent superAdminComponent = new SuperAdminComponent(db, user);
+        logbookComponent.setSizeFull(); logbookComponent.setId(""); //non cancellare
+        technicalComponent.setSizeFull(); logbookComponent.setId(""); //non cancellare
+        usersComponent.setSizeFull(); logbookComponent.setId(""); //non cancellare 
+        statsComponent.setSizeFull(); logbookComponent.setId(""); //non cancellare
+        adminComponent.setSizeFull(); logbookComponent.setId(""); //non cancellare
+        superAdminComponent.setSizeFull(); logbookComponent.setId(""); //non cancellare
+        tabs.addTab(logbookComponent, Messages.TAB_STL_PAGES);
+        //TECNICAL AREA TAB
+        tabs.addTab(technicalComponent, Messages.TAB_TECNHICAL_AREA);
+        //USER TAB
+        tabs.addTab(usersComponent, Messages.TAB_USERS);
+        //STATISTICS TAB
+        tabs.addTab(statsComponent, Messages.TAB_STATS);
+        //ADMINISTRATION TAB
+        tabs.addTab(adminComponent, Messages.TAB_ADMIN);
+        //SUPER ADMINISTRATION TAB
+        if(MyUtilities.CHECK_LEVEL(user.getLevelId(), Constants.SUPER_ADMIN)) {
+            tabs.addTab(superAdminComponent, Messages.TAB_SUPER_ADMIN);
+        }
+        //INFO TAB
+        VerticalLayout infoVl = new VerticalLayout();
+        infoVl.setId("info");
+        tabs.addTab(infoVl, Messages.TAB_INFO);
         tabs.addSelectedTabChangeListener(new TabSheet.SelectedTabChangeListener() {
             @Override
             public void selectedTabChange(TabSheet.SelectedTabChangeEvent event) {
+                String id = event.getTabSheet().getSelectedTab().getId();
+                if(id != null && id.equals("info")) {
+                    Window win = new Window(Messages.TAB_INFO);
+                    InfoComponent infoC = new InfoComponent(win);
+                    win.setContent(infoC);
+                    win.setWidth("35%");
+                    win.setResizable(false);
+                    win.setModal(true);
+                    UI.getCurrent().addWindow(win);
+                    event.getTabSheet().setSelectedTab(0);
+                }
                 Collection<Window> windows = UI.getCurrent().getWindows();
                 if(windows.size() > 0) {
                     Iterator iterator = windows.iterator();
@@ -145,72 +190,11 @@ public class MainPage extends CustomComponent implements LoginInterface {
                 }
             }
         });
-        tabs.setSizeFull();
-        //LOGBOOK TAB
-        tabs.addTab(buildTab(LOGBOOK_COMPONENT), Messages.TAB_STL_PAGES);
-        //TECNICAL AREA TAB
-        tabs.addTab(buildTab(TECHNICAL_COMPONENT), Messages.TAB_TECNHICAL_AREA);
-        //USER TAB
-        tabs.addTab(buildTab(USERS_COMPONENT), Messages.TAB_USERS);
-        //STATISTICS TAB
-        tabs.addTab(buildTab(STATS_COMPONENT), Messages.TAB_STATS);
-        //ADMINISTRATION TAB
-        tabs.addTab(buildTab(ADMIN_COMPONENT), Messages.TAB_ADMIN);
-        //SUPER ADMINISTRATION TAB
-        if(MyUtilities.CHECK_LEVEL(user.getLevelId(), Constants.SUPER_ADMIN)) {
-            tabs.addTab(buildTab(SUPER_ADMIN_COMPONENT), Messages.TAB_SUPER_ADMIN);
-        }
-        //INFO TAB
-        VerticalLayout infoVl = new VerticalLayout();
-        infoVl.setId("info");
-        tabs.addTab(infoVl, Messages.TAB_INFO);
-        tabs.addSelectedTabChangeListener(new TabSheet.SelectedTabChangeListener() {
-            @Override
-            public void selectedTabChange(TabSheet.SelectedTabChangeEvent event) {
-                if(event.getTabSheet().getSelectedTab().getId().equals("info")) {
-                    Window win = new Window(Messages.TAB_INFO);
-                    InfoComponent infoC = new InfoComponent(win);
-                    win.setContent(infoC);
-                    win.setWidth("35%");
-                    win.setResizable(false);
-                    win.setModal(true);
-                    UI.getCurrent().addWindow(win);
-                    event.getTabSheet().setSelectedTab(0);
-                }
-            }
-        });
         //
         al.addComponent(hl, "top: 0px; left: 0px");
         al.addComponent(tabs, "top: 95px; left: 15px; bottom: 15px; right: 15px");
     }
     
-    private CustomComponent buildTab(int type) {
-        CustomComponent component = null;
-        switch(type) {
-            case STATS_COMPONENT:
-                component = new Statistics(db);
-                break; 
-            case LOGBOOK_COMPONENT:
-                component = new LogBookComponent(db, user);
-                break; 
-            case TECHNICAL_COMPONENT:
-                component = new TechnicalComponent(db, user);
-                break; 
-            case USERS_COMPONENT:
-                component = new UsersComponent(db, user);
-                break;
-            case ADMIN_COMPONENT:
-                component = new AdminComponent(db, user);
-                break; 
-            case SUPER_ADMIN_COMPONENT:
-                component = new SuperAdminComponent(db, user);
-                break;   
-        }
-        component.setId("");
-        component.setSizeFull();
-        return component;
-    }
-
     private void clock() {
         timer = new Timer();
         timerTask = new TimerTask() {

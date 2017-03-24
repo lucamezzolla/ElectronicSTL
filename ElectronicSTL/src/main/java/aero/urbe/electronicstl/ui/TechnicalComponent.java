@@ -124,7 +124,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
             }
         });
         upload = new Upload();
-        upload.setButtonCaption("Add file (max 10mb)...");
+        upload.setButtonCaption("Add file...");
         upload.setImmediate(true);
         upload.setReceiver(receiver);
         upload.addProgressListener(new Upload.ProgressListener() {
@@ -148,8 +148,8 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         hl = new HorizontalLayout();
         hl.setSpacing(true);
         hl.addComponents(upload, advancedCombo, selectSim, submit, pb);
-        hl.setComponentAlignment(upload, Alignment.BOTTOM_LEFT);
-        //hl.setComponentAlignment(pb, Alignment.BOTTOM_LEFT);
+        hl.setComponentAlignment(upload, Alignment.BOTTOM_RIGHT);
+        hl.setComponentAlignment(pb, Alignment.BOTTOM_RIGHT);
         submit.setVisible(false);
         //----------------------------------------------------------
         defectsTableItemClickListner = new ItemClickEvent.ItemClickListener() {
@@ -190,19 +190,23 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
                                 FileOutputStream output = null;
                                 String fileName = fileItem.getName();
                                 InputStream input = fileItem.getIs();
-                                File file = new File("/tmp/"+fileName);
+                                final File file = new File("/tmp/"+fileName);
                                 output = new FileOutputStream(file);
                                 IOUtils.copy(input,output);
                                 input.close();
                                 output.close();
                                 final Window win = new Window(fileName);
                                 win.setModal(true);
+                                win.setClosable(false);
                                 win.setResizable(false);
                                 Button downloadButton = new Button("Download");
                                 Button closeButton = new Button("Close", new Button.ClickListener() {
                                     @Override
                                     public void buttonClick(Button.ClickEvent event) {
                                         win.close();
+                                        if(file.exists()) {
+                                            file.delete();
+                                        }
                                     }
                                 });
                                 downloadButton.setWidth("100%");
@@ -230,6 +234,9 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         layout.setExpandRatio(technicalItemsTable, 9);
         super.setCompositionRoot(layout);
         setPrivileges();
+        if(selectSim.size() > 0) {
+            submit.click();
+        }
     }
     
     private void setPrivileges() {
@@ -385,6 +392,7 @@ public class TechnicalComponent extends CustomComponent implements Button.ClickL
         if(((MyItem)event.getProperty().getValue()).getId() == 1) {
             technicalItemsTable.setVisible(false);
             upload.setVisible(false);
+            submit.click();
         }
         //DEFERRED ITEM
         if(((MyItem)event.getProperty().getValue()).getId() == 2) {
@@ -409,7 +417,7 @@ class Uploader implements Receiver, SucceededListener {
     private int typeId, simulatorId;
     private jdb db;
     private UploadInterface listener;
-
+    
     public void setListener(UploadInterface listener) {
         this.listener = listener;
     }
@@ -442,14 +450,14 @@ class Uploader implements Receiver, SucceededListener {
             try {
                 FileInputStream inputStream = new FileInputStream(file);
                 Queries.INSERT_FILE(db, file.getName(), inputStream, typeId, simulatorId);
-                MyNotification.SHOW("Added!", Type.HUMANIZED_MESSAGE);
                 inputStream.close();
                 file.delete();
+                MyNotification.SHOW("Added!", Type.HUMANIZED_MESSAGE);
                 if(listener != null) {
                     listener.uploadTable();
                 }
             } catch(Exception ex) {
-                MyNotification.SHOW(Messages.ERROR, "The size of the file is too large (max 10mb)!", Notification.Type.ERROR_MESSAGE);
+                MyNotification.SHOW(Messages.ERROR, "The size of the file is too large!", Notification.Type.ERROR_MESSAGE);
             }
         } else {
             MyNotification.SHOW("No selected file", Notification.Type.WARNING_MESSAGE);
